@@ -25,7 +25,6 @@ struct lambda_abstraction
 
 struct lambda_term
 {
-    /* @todo -- alpha hash */
     lambda_term_type_t type;
     union {
         struct lambda_application app;
@@ -46,6 +45,8 @@ void lambda_redex_beta_reduce(struct lambda_term **redex);
 
 void lambda_term_normal_order_reduce_step(struct lambda_term **term);
 void lambda_term_call_by_name_reduce_step(struct lambda_term **term);
+
+void lambda_term_alpha_hash(struct lambda_term *term);
 
 void lambda_term_dump(struct lambda_term *term);
 

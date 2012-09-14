@@ -381,8 +381,7 @@ lcalc_test()
                                                                                                                               lambda_application_new(lambda_variable_new(5),
                                                                                                                                                      lambda_variable_new(6))))));
 
-    struct lambda_term *app = lambda_application_new(lambda_application_new(mult,
-                                                                            church2),
+    struct lambda_term *app = lambda_application_new(lambda_application_new(mult, church2),
                                                      church3);
 
     lambda_term_normal_order_reduce_step(&app);

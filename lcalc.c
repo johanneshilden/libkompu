@@ -21,7 +21,7 @@ dump_term_tree(struct lambda_term *term)
         printf(")");
         break;
     case LAMBDA_TERM_VARIABLE:
-        printf("%i", term->var);
+        printf("%i ", term->var);
         break;
     } /* end switch */
 }
@@ -215,6 +215,20 @@ lambda_term_call_by_name_reduce_step(struct lambda_term **term)
         /*
          *  A variable is in whnf and reduces to itself.
          */
+        break;
+    } /* end switch */
+}
+
+void
+lambda_term_alpha_hash(struct lambda_term *term)
+{
+    switch (term->type)
+    {
+    case LAMBDA_TERM_APPLICATION:
+        break;
+    case LAMBDA_TERM_ABSTRACTION:
+        break;
+    case LAMBDA_TERM_VARIABLE:
         break;
     } /* end switch */
 }
