@@ -315,16 +315,16 @@ lcalc_test()
 
     struct lambda_term *a = lambda_application_new(succ, zero);
 
-    lambda_term_dump(a);
+//    lambda_term_dump(a);
 
     lambda_term_normal_order_reduce_step(&a);
-    lambda_term_dump(a);
+//    lambda_term_dump(a);
 
     lambda_term_normal_order_reduce_step(&a);
-    lambda_term_dump(a);
+//    lambda_term_dump(a);
 
     lambda_term_normal_order_reduce_step(&a);
-    lambda_term_dump(a);
+//    lambda_term_dump(a);
 
     lambda_term_destroy(a);
 
@@ -381,13 +381,29 @@ lcalc_test()
                                                                                                                               lambda_application_new(lambda_variable_new(5),
                                                                                                                                                      lambda_variable_new(6))))));
 
-    struct lambda_term *app = lambda_application_new(mult, church2);
+    struct lambda_term *app = lambda_application_new(lambda_application_new(mult, church2),
+                                                      church3);
 
-    lambda_term_dump(app);
     lambda_term_normal_order_reduce_step(&app);
     lambda_term_dump(app);
 
+    lambda_term_normal_order_reduce_step(&app);
+    lambda_term_dump(app);
 
+    lambda_term_normal_order_reduce_step(&app);
+    lambda_term_dump(app);
+
+    lambda_term_normal_order_reduce_step(&app);
+    lambda_term_dump(app);
+
+    lambda_term_normal_order_reduce_step(&app);
+    lambda_term_dump(app);
+
+    //
+
+    lambda_term_destroy(app);
+
+    //
 
     malloc_stats();
 }
@@ -396,7 +412,7 @@ int
 main(void)
 {
     if (0 == 1)
-        comp_test();    // tmp
+        comp_test();        // tmp
 
     if (0 == 1)
         tmachine_test();    // tmp
