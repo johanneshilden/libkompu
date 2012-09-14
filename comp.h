@@ -43,15 +43,10 @@ struct node_search
 };
 
 struct node *projection_node_new(int place);
-
 struct node *zero_node_new();
-
 struct node *successor_node_new();
-
 struct node *composition_node_new(struct node *f, struct node **g);
-
 struct node *recursion_node_new(struct node *f, struct node *g);
-
 struct node *search_node_new(struct node *p);
 
 void node_destroy(struct node *n);

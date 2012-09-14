@@ -337,11 +337,10 @@ main(void)
     if (0 == 1)
         comp_test();    // tmp
 
-//    if (0 == 1)
+    if (0 == 1)
         tmachine_test();    // tmp
 
-    if (0 == 1)
-        lcalc_test();
+    lcalc_test();
 
     return 0;
 }
