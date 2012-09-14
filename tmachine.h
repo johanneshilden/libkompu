@@ -30,17 +30,12 @@ struct tm_machine
     tm_int state_count;
 };
 
-struct tm_instr_state
-{
-    tm_int state;
-    tm_int symbol;
-};
-
 struct tm_instruction
 {
     struct tm_instruction *next;
-    struct tm_instr_state in;           // change to symbol only . state not used!!
-    struct tm_instr_state out;
+    tm_int symbol_in;
+    tm_int symbol_out;
+    tm_int state_out;
     tm_machine_direction_t direction;
 };
 

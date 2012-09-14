@@ -162,10 +162,9 @@ t_machine_add_instruction(struct tm_machine *machine,
 
     assert(machine);
     instr = malloc(sizeof(struct tm_instruction));
-    instr->in.state   = state_in;
-    instr->in.symbol  = symbol_in;
-    instr->out.state  = state_out;
-    instr->out.symbol = symbol_out;
+    instr->symbol_in  = symbol_in;
+    instr->state_out  = state_out;
+    instr->symbol_out = symbol_out;
     instr->direction  = dir;
     s = t_machine_state_get(machine, state_in);
     instr->next = s->instrs;
@@ -252,7 +251,7 @@ t_machine_run(struct tm_machine *machine, struct tm_tape *tape)
             t_machine_tape_append_symbol(tape, 0);
 
         symbol = tape->data[tape->p];
-        while (instr && instr->in.symbol != symbol)
+        while (instr && instr->symbol_in != symbol)
             instr = instr->next;
 
         t_machine_dump_tape(tape);
@@ -261,8 +260,8 @@ t_machine_run(struct tm_machine *machine, struct tm_tape *tape)
             return -1;
         }
 
-        machine->curr_state = instr->out.state;
-        tape->data[tape->p] = instr->out.symbol;
+        machine->curr_state = instr->state_out;
+        tape->data[tape->p] = instr->symbol_out;
         tape->p += TM_LEFT == instr->direction ? -1 : 1;
         /* (void) getchar(); */
     }
