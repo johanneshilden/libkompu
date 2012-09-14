@@ -44,8 +44,8 @@ struct lambda_term *lambda_term_clone(struct lambda_term *term);
 void lambda_term_substitute(struct lambda_term **term, lambda_id x, struct lambda_term *n);
 void lambda_redex_beta_reduce(struct lambda_term **redex);
 
-void lamba_term_normal_order_reduce_step(struct lambda_term **term);
-void lamba_term_call_by_name_reduce_step(struct lambda_term **term);
+void lambda_term_normal_order_reduce_step(struct lambda_term **term);
+void lambda_term_call_by_name_reduce_step(struct lambda_term **term);
 
 void lambda_term_dump(struct lambda_term *term);
 

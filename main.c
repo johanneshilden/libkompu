@@ -317,16 +317,77 @@ lcalc_test()
 
     lambda_term_dump(a);
 
-    lamba_term_normal_order_reduce_step(&a);
+    lambda_term_normal_order_reduce_step(&a);
     lambda_term_dump(a);
 
-    lamba_term_normal_order_reduce_step(&a);
+    lambda_term_normal_order_reduce_step(&a);
     lambda_term_dump(a);
 
-    lamba_term_normal_order_reduce_step(&a);
+    lambda_term_normal_order_reduce_step(&a);
     lambda_term_dump(a);
 
     lambda_term_destroy(a);
+
+    // MPQ = (MP)Q
+
+    // multiplication:
+    //
+    // λxyz.x(yz)           -> λ0.λ1.λ2.0(12)
+
+    // c0 = λf.λx.x
+    // c1 = λf.λx.fx
+    // c2 = λf.λx.f(fx)     -> λ3.λ4.3(34)
+    // c3 = λf.λx.f(f(fx))  -> λ5.λ6.5(5(56))
+
+    // mult 2 3
+
+    // (λ0.λ1.λ2.0(12))(λ3.λ4.3(34))(λ5.λ6.5(5(56)))
+
+    // λ1.λ2.0(12)[0 := (λ3.λ4.3(34))(λ5.λ6.5(5(56)))]
+
+    // λ1.λ2.(λ3.λ4.3(34))(λ5.λ6.5(5(56)))(12)
+
+
+
+    /*
+     *  λ0.λ1.λ2.0(12)
+     */
+
+    struct lambda_term *mult = lambda_abstraction_new(0,
+                                                      lambda_abstraction_new(1,
+                                                                             lambda_abstraction_new(2,
+                                                                                                    lambda_application_new(lambda_variable_new(0),
+                                                                                                                           lambda_application_new(lambda_variable_new(1),
+                                                                                                                                                  lambda_variable_new(2))))));
+
+    /*
+     *  λ3.λ4.3(34)     (Church numeral 2)
+     */
+
+    struct lambda_term *church2 = lambda_abstraction_new(3,
+                                                         lambda_abstraction_new(4,
+                                                                                lambda_application_new(lambda_variable_new(3),
+                                                                                                       lambda_application_new(lambda_variable_new(3),
+                                                                                                                              lambda_variable_new(4)))));
+
+    /*
+     *  λ5.λ6.5(5(56))  (Church numeral 3)
+     */
+
+    struct lambda_term *church3 = lambda_abstraction_new(5,
+                                                         lambda_abstraction_new(6,
+                                                                                lambda_application_new(lambda_variable_new(5),
+                                                                                                       lambda_application_new(lambda_variable_new(5),
+                                                                                                                              lambda_application_new(lambda_variable_new(5),
+                                                                                                                                                     lambda_variable_new(6))))));
+
+    struct lambda_term *app = lambda_application_new(mult, church2);
+
+    lambda_term_dump(app);
+    lambda_term_normal_order_reduce_step(&app);
+    lambda_term_dump(app);
+
+
 
     malloc_stats();
 }

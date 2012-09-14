@@ -123,6 +123,10 @@ lambda_term_substitute(struct lambda_term **term, lambda_id x, struct lambda_ter
     } /* end switch */
 }
 
+/*!
+ *  Performs a beta reduction step on \a redex, if the term is a valid
+ *  redex. Otherwise does nothing.
+ */
 void
 lambda_redex_beta_reduce(struct lambda_term **redex)
 {
@@ -154,19 +158,19 @@ lambda_redex_beta_reduce(struct lambda_term **redex)
  *  before the arguments are reduced.
  */
 void
-lamba_term_normal_order_reduce_step(struct lambda_term **term)
+lambda_term_normal_order_reduce_step(struct lambda_term **term)
 {
     switch ((*term)->type)
     {
     case LAMBDA_TERM_APPLICATION:
         lambda_redex_beta_reduce(term);
         if (LAMBDA_TERM_APPLICATION == (*term)->type) {
-            lamba_term_normal_order_reduce_step(&(*term)->app.expr1);
-            lamba_term_normal_order_reduce_step(&(*term)->app.expr2);
+            lambda_term_normal_order_reduce_step(&(*term)->app.expr1);
+            lambda_term_normal_order_reduce_step(&(*term)->app.expr2);
         }
         break;
     case LAMBDA_TERM_ABSTRACTION:
-        lamba_term_normal_order_reduce_step(&(*term)->abstr.expr);
+        lambda_term_normal_order_reduce_step(&(*term)->abstr.expr);
     case LAMBDA_TERM_VARIABLE:
         break;
     } /* end switch */
@@ -178,7 +182,7 @@ lamba_term_normal_order_reduce_step(struct lambda_term **term)
  *  although it contains the redex (λx.x)x.
  */
 void
-lamba_term_call_by_name_reduce_step(struct lambda_term **term)
+lambda_term_call_by_name_reduce_step(struct lambda_term **term)
 {
     switch ((*term)->type)
     {
@@ -186,7 +190,7 @@ lamba_term_call_by_name_reduce_step(struct lambda_term **term)
         /*
          *  An application (e1 e2) is reduced by first reducing e1 to e1'.
          */
-        lamba_term_call_by_name_reduce_step(&(*term)->app.expr1);
+        lambda_term_call_by_name_reduce_step(&(*term)->app.expr1);
 
         if (LAMBDA_TERM_ABSTRACTION == (*term)->app.expr1->type) {
             /*
@@ -200,7 +204,7 @@ lamba_term_call_by_name_reduce_step(struct lambda_term **term)
              *  If e1' is not an abstraction, e2 is reduced to e2'.
              */
 
-            lamba_term_call_by_name_reduce_step(&(*term)->app.expr2);
+            lambda_term_call_by_name_reduce_step(&(*term)->app.expr2);
         }
         break;
     case LAMBDA_TERM_ABSTRACTION:
