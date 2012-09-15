@@ -26,7 +26,7 @@ comp_test()
         //
 
         int x[2] = {5, 12};
-        y = compute(f, x, 2);
+        y = node_compute(f, x, 2);
         printf("y = %i\n", y);
         assert(y == 17);
 
@@ -54,7 +54,7 @@ comp_test()
         f = composition_node_new(successor_node_new(), g);
 
         int x[2] = {5, 12};
-        y = compute(f, x, 2);
+        y = node_compute(f, x, 2);
         printf("y = %i\n", y);
         assert(y == 2);
 
@@ -83,7 +83,7 @@ comp_test()
 
         mult = recursion_node_new(zero_node_new(), composition_node_new(add, h));
         int x[2] = {5, 6};
-        y = compute(mult, x, 2);
+        y = node_compute(mult, x, 2);
         printf("y = %i\n", y);
         assert(y == 30);
 
@@ -126,7 +126,7 @@ comp_test()
         exp = recursion_node_new(one, composition_node_new(mult, k));
 
         int x[2] = {4, 4};
-        y = compute(exp, x, 2);
+        y = node_compute(exp, x, 2);
         printf("y = %i\n", y);
         assert(y == 256);
 
@@ -175,7 +175,7 @@ comp_test()
         fact = recursion_node_new(one, composition_node_new(mult, i));
 
         int x = 5;
-        y = compute(fact, &x, 1);
+        y = node_compute(fact, &x, 1);
         printf("y = %i\n", y);
         assert(y == 120);
 
@@ -202,12 +202,12 @@ comp_test()
         iszero = recursion_node_new(one, zero_node_new());
 
         int x = 0;
-        y = compute(iszero, &x, 1);
+        y = node_compute(iszero, &x, 1);
         printf("y = %i\n", y);
         assert(y == 1);
 
         x = 5;
-        y = compute(iszero, &x, 1);
+        y = node_compute(iszero, &x, 1);
         printf("y = %i\n", y);
         assert(y == 0);
 
@@ -231,7 +231,7 @@ comp_test()
         pred = recursion_node_new(zero_node_new(), projection_node_new(1));
 
         x = 4;
-        y = compute(pred, &x, 1);
+        y = node_compute(pred, &x, 1);
         assert(3 == y);
 
         g = node_array_new(2);
@@ -242,7 +242,7 @@ comp_test()
                                    composition_node_new(pred, g));
 
         int xs[2] = {17, 3};
-        y = compute(monus, xs, 2);
+        y = node_compute(monus, xs, 2);
         printf("y = %i\n", y);
         assert(14 == y);
 
@@ -442,13 +442,13 @@ lcalc_test()
 int
 main(void)
 {
-//    if (0 == 1)
+    if (0 == 1)
         comp_test();        // tmp
 
-//    if (0 == 1)
-//        tmachine_test();    // tmp
+    if (0 == 1)
+        tmachine_test();    // tmp
 
-//    lcalc_test();
+    lcalc_test();
 
     return 0;
 }

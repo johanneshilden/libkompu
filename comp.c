@@ -232,7 +232,7 @@ node_array_new(size_t e)
  *  Returns the result of the computation described by the provided node tree.
  */
 int
-compute(const struct node *n, int *x, size_t args)
+node_compute(const struct node *n, int *x, size_t args)
 {
     union node_d_ptr d_ptr;
     struct node **curr;
@@ -254,22 +254,22 @@ compute(const struct node *n, int *x, size_t args)
         int y[d_ptr.comp->places];
         j = 0;
         while (j < d_ptr.comp->places) {
-            y[j++] = compute(*curr, x, args);
+            y[j++] = node_compute(*curr, x, args);
             ++curr;
         }
-        return compute(d_ptr.comp->f, y, j);
+        return node_compute(d_ptr.comp->f, y, j);
     }
     case NODE_RECURSION:
         d_ptr.rec = (struct node_recursion *) n->data;
         if (0 == x[args - 1]) {
-            return compute(d_ptr.rec->f, x, args - 1);
+            return node_compute(d_ptr.rec->f, x, args - 1);
         } else {
             int nx[args + 1];
             --x[args - 1];
-            nx[0] = compute(n, x, args);
+            nx[0] = node_compute(n, x, args);
             memcpy(&nx[1], x, args * sizeof(int));
             ++x[args - 1];
-            return compute(d_ptr.rec->g, nx, args + 1);
+            return node_compute(d_ptr.rec->g, nx, args + 1);
         }
     case NODE_SEARCH:
         d_ptr.search = (struct node_search *) n->data;
@@ -277,7 +277,7 @@ compute(const struct node *n, int *x, size_t args)
         lim = x[args - 1];
         for (i = 0; i < lim; ++i) {
             x[args - 1] = i;
-            if (1 == compute(d_ptr.search->p, x, args))
+            if (1 == node_compute(d_ptr.search->p, x, args))
                 return i;
         }
         return lim;

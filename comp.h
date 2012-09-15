@@ -66,7 +66,7 @@ void node_destroy(struct node *n);
 
 struct node **node_array_new(size_t e);
 
-int compute(const struct node *n, int *x, size_t args);
+int node_compute(const struct node *n, int *x, size_t args);
 
 #ifdef __cplusplus
 }
