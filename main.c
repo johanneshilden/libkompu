@@ -246,6 +246,9 @@ comp_test()
         printf("y = %i\n", y);
         assert(14 == y);
 
+        struct node *copy = node_clone(monus);
+        node_destroy(copy);
+
         node_destroy(monus);
     }
 
@@ -425,6 +428,7 @@ lcalc_test()
 
     lambda_term_destroy(app);
     lambda_term_destroy(a);
+    lambda_term_destroy(cone);
 
     // λ0.λ1.λ2.0 == λ4.λ5.λ6.4
 
@@ -438,13 +442,13 @@ lcalc_test()
 int
 main(void)
 {
-    if (0 == 1)
+//    if (0 == 1)
         comp_test();        // tmp
 
-    if (0 == 1)
-        tmachine_test();    // tmp
+//    if (0 == 1)
+//        tmachine_test();    // tmp
 
-    lcalc_test();
+//    lcalc_test();
 
     return 0;
 }

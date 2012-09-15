@@ -4,27 +4,27 @@
 #include "tmachine.h"
 
 /*!
-    \struct tm_machine_state
-
-    \brief A Turing machine state.
+ *  \struct tm_machine_state
+ *
+ *  \brief A Turing machine state.
  */
 
 /*!
-    \struct tm_machine
-
-    \brief The base struct representing a Turing machine.
+ *  \struct tm_machine
+ *
+ *  \brief The base struct representing a Turing machine.
  */
 
 /*!
-    \struct tm_instruction
-
-    \brief A Turing machine instruction.
+ *  \struct tm_instruction
+ *
+ *  \brief A Turing machine instruction.
  */
 
 /*!
-    \struct tm_tape
-
-    \brief A Turing machine tape.
+ *  \struct tm_tape
+ *
+ *  \brief A Turing machine tape.
  */
 
 static void
@@ -71,7 +71,7 @@ t_machine_current_state(struct tm_machine *machine)
 }
 
 /*!
-    Creates a new Turing machine.
+ *  Creates a new Turing machine.
  */
 struct tm_machine *
 t_machine_new()
@@ -85,7 +85,7 @@ t_machine_new()
 }
 
 /*!
-    Destroys the machine and releases associated memory.
+ *  Destroys the machine and releases associated memory.
  */
 void
 t_machine_destroy(struct tm_machine *machine)
@@ -101,8 +101,8 @@ t_machine_destroy(struct tm_machine *machine)
 }
 
 /*!
-    Adds a new state to the provided machine. Returns a pointer to the
-    tm_machine_state struct for the new state.
+ *  Adds a new state to the provided machine. Returns a pointer to the
+ *  tm_machine_state struct for the new state.
  */
 struct tm_machine_state *
 t_machine_add_state(struct tm_machine *machine)
@@ -117,7 +117,7 @@ t_machine_add_state(struct tm_machine *machine)
 }
 
 /*!
-    Inserts \a n states to the provided machine.
+ *  Inserts \a n states to the provided machine.
  */
 void
 t_machine_insert_states(struct tm_machine *machine, size_t n)
@@ -128,8 +128,8 @@ t_machine_insert_states(struct tm_machine *machine, size_t n)
 }
 
 /*!
-    Returns a pointer to the tm_machine_state struct corresponding to
-    position \a at or NULL if no such state exists.
+ *  Returns a pointer to the tm_machine_state struct corresponding to
+ *  position \a at or NULL if no such state exists.
  */
 struct tm_machine_state *
 t_machine_state_get(struct tm_machine *machine, tm_int at)
@@ -147,7 +147,7 @@ t_machine_state_get(struct tm_machine *machine, tm_int at)
 }
 
 /*!
-    Adds a new instruction to the provided machine.
+ *  Adds a new instruction to the provided machine.
  */
 void
 t_machine_add_instruction(struct tm_machine *machine,
@@ -172,7 +172,7 @@ t_machine_add_instruction(struct tm_machine *machine,
 }
 
 /*!
-    Creates a new (empty) Turing machine tape.
+ *  Creates a new (empty) Turing machine tape.
  */
 struct tm_tape *
 t_machine_tape_new()
@@ -190,7 +190,7 @@ t_machine_tape_new()
 }
 
 /*!
-    Destroys the passed tape and releases associated memory.
+ *  Destroys the passed tape and releases associated memory.
  */
 void
 t_machine_tape_destroy(struct tm_tape *tape)
@@ -202,7 +202,7 @@ t_machine_tape_destroy(struct tm_tape *tape)
 }
 
 /*!
-    Appends the symbol \a symbol to the provided tape.
+ *  Appends the symbol \a symbol to the provided tape.
  */
 void
 t_machine_tape_append_symbol(struct tm_tape *tape, tm_int symbol)
@@ -215,7 +215,7 @@ t_machine_tape_append_symbol(struct tm_tape *tape, tm_int symbol)
 }
 
 /*!
-    Prepends the symbol \a symbol to the provided tape.
+ *  Prepends the symbol \a symbol to the provided tape.
  */
 void
 t_machine_tape_prepend_symbol(struct tm_tape *tape, tm_int symbol)
@@ -229,7 +229,7 @@ t_machine_tape_prepend_symbol(struct tm_tape *tape, tm_int symbol)
 }
 
 /*!
-    Runs the machine with the provided tape as input.
+ *  Runs the machine with the provided tape as input.
  */
 int8_t
 t_machine_run(struct tm_machine *machine, struct tm_tape *tape)
@@ -271,7 +271,7 @@ t_machine_run(struct tm_machine *machine, struct tm_tape *tape)
 }
 
 /*!
-    Prints out the tape to stdout.
+ *  Prints out the tape to stdout.
  */
 void
 t_machine_dump_tape(struct tm_tape *tape)

@@ -72,4 +72,8 @@ int8_t t_machine_run(struct tm_machine *machine, struct tm_tape *tape);
 
 void t_machine_dump_tape(struct tm_tape *tape);
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif // TMACHINE_H

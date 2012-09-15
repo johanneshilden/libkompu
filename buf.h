@@ -31,4 +31,8 @@ void buf_append_chars(struct buf *b, const char *s);
 
 int buf_compare(struct buf *b1, struct buf *b2);
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif /* BUF_H */

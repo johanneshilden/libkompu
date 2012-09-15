@@ -14,37 +14,37 @@
  */
 
 /*!
-    \struct node
-
-    \brief The base node struct, holding a pointer to node specific data.
+ *  \struct node
+ *
+ *  \brief The base node struct, holding a pointer to node specific data.
  */
 
 /*!
-    \struct node_projection
-
-    \brief A leaf projection node.
+ *  \struct node_projection
+ *
+ *  \brief A leaf projection node.
  */
 
 /*!
-    \struct node_composition
-
-    \brief Node representing an application of composition.
+ *  \struct node_composition
+ *
+ *  \brief Node representing an application of composition.
  */
 
 /*!
-    \struct node_recursion
-
-    \brief Node representing an application of primitive recursion.
+ *  \struct node_recursion
+ *
+ *  \brief Node representing an application of primitive recursion.
  */
 
 /*!
-    \struct node_search
-
-    \brief Search operator node.
+ *  \struct node_search
+ *
+ *  \brief Search operator node.
  */
 
 /*!
-    Creates a new projection function node.
+ *  Creates a new projection function node.
  */
 struct node *
 projection_node_new(int place)
@@ -60,7 +60,7 @@ projection_node_new(int place)
 }
 
 /*!
-    Creates a new zero function node.
+ *  Creates a new zero function node.
  */
 struct node *
 zero_node_new()
@@ -73,7 +73,7 @@ zero_node_new()
 }
 
 /*!
-    Creates a new successor function node.
+ *  Creates a new successor function node.
  */
 struct node *
 successor_node_new()
@@ -86,10 +86,10 @@ successor_node_new()
 }
 
 /*!
-    Creates a new composition node.
-
-    Explicit transformation permits scrambling variables, repeating variables,
-    omitting variables, and substituting constants.
+ *  Creates a new composition node.
+ *
+ *  Explicit transformation permits scrambling variables, repeating variables,
+ *  omitting variables, and substituting constants.
  */
 struct node *
 composition_node_new(struct node *f, struct node **g)
@@ -109,7 +109,7 @@ composition_node_new(struct node *f, struct node **g)
 }
 
 /*!
-    Creates a new recursion node.
+ *  Creates a new recursion node.
  */
 struct node *
 recursion_node_new(struct node *f, struct node *g)
@@ -126,7 +126,7 @@ recursion_node_new(struct node *f, struct node *g)
 }
 
 /*!
-    Creates a new search node (the μ-operator).
+ *  Creates a new search node (the μ-operator).
  */
 struct node *
 search_node_new(struct node *p)
@@ -141,47 +141,75 @@ search_node_new(struct node *p)
     return n;
 }
 
+struct node *
+node_clone(struct node *n)
+{
+    struct node **g;
+    union node_d_ptr d_ptr;
+    int i;
+
+    if (n) {
+        switch (n->type)
+        {
+        case NODE_COMPOSITION:
+            d_ptr.comp = (struct node_composition *) n->data;
+            g = node_array_new(d_ptr.comp->places);
+            for (i = 0; i < d_ptr.comp->places; ++i)
+                g[i] = node_clone(d_ptr.comp->g[i]);
+            return composition_node_new(node_clone(d_ptr.comp->f), g);
+        case NODE_RECURSION:
+            d_ptr.rec = (struct node_recursion *) n->data;
+            return recursion_node_new(node_clone(d_ptr.rec->f),
+                                      node_clone(d_ptr.rec->g));
+        case NODE_SEARCH:
+            d_ptr.search = (struct node_search *) n->data;
+            return search_node_new(d_ptr.search->p);
+        case NODE_PROJECTION:
+            d_ptr.proj = (struct node_projection *) n->data;
+            return projection_node_new(d_ptr.proj->place);
+        case NODE_ZERO:
+            return zero_node_new();
+        case NODE_SUCCESSOR:
+            return successor_node_new();
+        } /* end switch */
+    }
+    return NULL;
+}
+
 /*!
-    Destroys the provided node and releases associated memory.
+ *  Destroys the provided node and releases associated memory.
  */
 void
 node_destroy(struct node *n)
 {
+    int i;
+    union node_d_ptr d_ptr;
+    struct node **curr;
+
     assert(n);
 
     switch (n->type)
     {
     case NODE_COMPOSITION:
-    {
-        struct node **curr;
-        struct node_composition *comp;
-        int i;
-        comp = (struct node_composition *) n->data;
-        curr = comp->g;
-        i = comp->places;
+        d_ptr.comp = (struct node_composition *) n->data;
+        curr = d_ptr.comp->g;
+        i = d_ptr.comp->places;
         while (i--) {
             node_destroy(*curr);
             ++curr;
         }
-        free(comp->g);
-        node_destroy(comp->f);
+        free(d_ptr.comp->g);
+        node_destroy(d_ptr.comp->f);
         break;
-    }
     case NODE_RECURSION:
-    {
-        struct node_recursion *rec;
-        rec = (struct node_recursion *) n->data;
-        node_destroy(rec->f);
-        node_destroy(rec->g);
+        d_ptr.rec = (struct node_recursion *) n->data;
+        node_destroy(d_ptr.rec->f);
+        node_destroy(d_ptr.rec->g);
         break;
-    }
     case NODE_SEARCH:
-    {
-        struct node_search *search;
-        search = (struct node_search *) n->data;
-        node_destroy(search->p);
+        d_ptr.search = (struct node_search *) n->data;
+        node_destroy(d_ptr.search->p);
         break;
-    }
     case NODE_ZERO:
     case NODE_PROJECTION:
     case NODE_SUCCESSOR:
@@ -192,7 +220,7 @@ node_destroy(struct node *n)
 }
 
 /*!
-    Allocates a new node array with \a e elements.
+ *  Allocates a new node array with \a e elements.
  */
 struct node **
 node_array_new(size_t e)
@@ -201,67 +229,58 @@ node_array_new(size_t e)
 }
 
 /*!
-    Returns the result of the computation described by the provided node tree.
+ *  Returns the result of the computation described by the provided node tree.
  */
 int
 compute(const struct node *n, int *x, size_t args)
 {
+    union node_d_ptr d_ptr;
+    struct node **curr;
+    int i, j, lim;
+
     switch (n->type)
     {
     case NODE_ZERO:
         return 0;
     case NODE_PROJECTION:
-    {
-        struct node_projection *proj;
-        proj = (struct node_projection *) n->data;
-        return x[proj->place];
-    }
+        d_ptr.proj = (struct node_projection *) n->data;
+        return x[d_ptr.proj->place];
     case NODE_SUCCESSOR:
         return (*x) + 1;
     case NODE_COMPOSITION:
     {
-        struct node_composition *comp;
-        struct node **curr;
-        int j;
-        comp = (struct node_composition *) n->data;
-        curr = comp->g;
-        int y[comp->places];
+        d_ptr.comp = (struct node_composition *) n->data;
+        curr = d_ptr.comp->g;
+        int y[d_ptr.comp->places];
         j = 0;
-        while (j < comp->places) {
+        while (j < d_ptr.comp->places) {
             y[j++] = compute(*curr, x, args);
             ++curr;
         }
-        return compute(comp->f, y, j);
+        return compute(d_ptr.comp->f, y, j);
     }
     case NODE_RECURSION:
-    {
-        struct node_recursion *rec;
-        rec = (struct node_recursion *) n->data;
+        d_ptr.rec = (struct node_recursion *) n->data;
         if (0 == x[args - 1]) {
-            return compute(rec->f, x, args - 1);
+            return compute(d_ptr.rec->f, x, args - 1);
         } else {
             int nx[args + 1];
             --x[args - 1];
             nx[0] = compute(n, x, args);
             memcpy(&nx[1], x, args * sizeof(int));
             ++x[args - 1];
-            return compute(rec->g, nx, args + 1);
+            return compute(d_ptr.rec->g, nx, args + 1);
         }
-    }
     case NODE_SEARCH:
-    {
-        struct node_search *search;
-        search = (struct node_search *) n->data;
-        int i, lim;
+        d_ptr.search = (struct node_search *) n->data;
 
         lim = x[args - 1];
         for (i = 0; i < lim; ++i) {
             x[args - 1] = i;
-            if (1 == compute(search->p, x, args))
+            if (1 == compute(d_ptr.search->p, x, args))
                 return i;
         }
         return lim;
-    }
     } /* end switch */
 
     /*

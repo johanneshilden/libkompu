@@ -47,6 +47,13 @@ struct node_search
     struct node *p;
 };
 
+union node_d_ptr {
+    struct node_composition *comp;
+    struct node_recursion *rec;
+    struct node_search *search;
+    struct node_projection *proj;
+};
+
 struct node *projection_node_new(int place);
 struct node *zero_node_new();
 struct node *successor_node_new();
@@ -54,10 +61,15 @@ struct node *composition_node_new(struct node *f, struct node **g);
 struct node *recursion_node_new(struct node *f, struct node *g);
 struct node *search_node_new(struct node *p);
 
+struct node *node_clone(struct node *n);
 void node_destroy(struct node *n);
 
 struct node **node_array_new(size_t e);
 
 int compute(const struct node *n, int *x, size_t args);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* COMP_H */

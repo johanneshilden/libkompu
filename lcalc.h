@@ -63,4 +63,8 @@ uint8_t lambda_term_alpha_compare(struct lambda_term *t1, struct lambda_term *t2
 
 void lambda_term_dump(struct lambda_term *term);
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif /* LCALC_H */
