@@ -4,6 +4,7 @@
 #include "comp.h"
 #include "tmachine.h"
 #include "lcalc.h"
+#include "buf.h"
 
 static void
 comp_test()
@@ -326,7 +327,6 @@ lcalc_test()
     lambda_term_normal_order_reduce_step(&a);
 //    lambda_term_dump(a);
 
-    lambda_term_destroy(a);
 
     // MPQ = (MP)Q
 
@@ -385,23 +385,46 @@ lcalc_test()
                                                      church3);
 
     lambda_term_normal_order_reduce_step(&app);
-    lambda_term_dump(app);
+//    lambda_term_dump(app);
 
     lambda_term_normal_order_reduce_step(&app);
-    lambda_term_dump(app);
+//    lambda_term_dump(app);
 
     lambda_term_normal_order_reduce_step(&app);
-    lambda_term_dump(app);
+//    lambda_term_dump(app);
 
     lambda_term_normal_order_reduce_step(&app);
-    lambda_term_dump(app);
+//    lambda_term_dump(app);
 
     lambda_term_normal_order_reduce_step(&app);
     lambda_term_dump(app);
 
     //
 
+//    struct buf *b = buf_new(64);
+//    lambda_term_alpha_hash(app, b);
+//    printf("%s\n", b->data);
+//    buf_destroy(b);
+
+
+    /*
+     *  λ0.λ1.0 1     (Church numeral one)
+     */
+
+    struct lambda_term *cone = lambda_abstraction_new(0,
+                                                      lambda_abstraction_new(1,
+                                                                             lambda_application_new(lambda_variable_new(0),
+                                                                                                    lambda_variable_new(1))));
+
+
+    uint8_t x = lambda_term_alpha_compare(cone, a);
+
+    printf("x = %u\n", x);
+
+    //
+
     lambda_term_destroy(app);
+    lambda_term_destroy(a);
 
     // λ0.λ1.λ2.0 == λ4.λ5.λ6.4
 

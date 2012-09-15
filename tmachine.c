@@ -40,7 +40,7 @@ t_machine_destroy_state(struct tm_machine_state *state)
     free(state);
 }
 
-static int
+static tm_tape_buferror_t
 t_machine_tape_buffer_grow(struct tm_tape *tape, size_t n)
 {
     size_t a;

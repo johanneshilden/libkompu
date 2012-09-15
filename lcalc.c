@@ -1,5 +1,6 @@
 #include <malloc.h>
 #include <assert.h>
+#include <stdio.h>
 #include "lcalc.h"
 
 static void
@@ -24,6 +25,65 @@ dump_term_tree(struct lambda_term *term)
         printf("%i ", term->var);
         break;
     } /* end switch */
+}
+
+static void
+lambda_term_traverse(struct lambda_term *term, struct buf *b, struct id_pair **list, int n)
+{
+    static char tmpstr[20];
+    struct id_pair *pair, *next;
+    lambda_id id;
+
+    switch (term->type)
+    {
+    case LAMBDA_TERM_APPLICATION:
+        buf_append_chars(b, "[");
+        lambda_term_traverse(term->app.expr1, b, list, n);
+        buf_append_chars(b, ",");
+        lambda_term_traverse(term->app.expr2, b, list, n);
+        buf_append_chars(b, "]");
+        break;
+    case LAMBDA_TERM_ABSTRACTION:
+        buf_append_chars(b, "L");
+        snprintf(tmpstr, 20, "%u", n);
+        pair = malloc(sizeof(struct id_pair));
+        pair->next = *list;
+        pair->key  = term->abstr.var;
+        pair->val  = n++;
+        *list = pair;
+        buf_append_chars(b, tmpstr);
+        buf_append_chars(b, ".");
+        lambda_term_traverse(term->abstr.expr, b, list, n);
+        break;
+    case LAMBDA_TERM_VARIABLE:
+        buf_append_chars(b, "V");
+        id = term->abstr.var;
+        next = *list;
+        while (next) {
+            if (term->abstr.var == next->key) {
+                id = next->val;
+                break;
+            }
+            next = next->next;
+        }
+        snprintf(tmpstr, 20, "%u", id);
+        buf_append_chars(b, tmpstr);
+        break;
+    } /* end switch */
+}
+
+static void
+lambda_term_alpha_hash(struct lambda_term *term, struct buf *b)
+{
+    struct id_pair *list, *next;
+    list = NULL;
+    lambda_term_traverse(term, b, &list, 0);
+
+    while (list) {
+        next = list->next;
+        free(list);
+        list = next;
+    }
 }
 
 struct
@@ -219,18 +279,30 @@ lambda_term_call_by_name_reduce_step(struct lambda_term **term)
     } /* end switch */
 }
 
-void
-lambda_term_alpha_hash(struct lambda_term *term)
+/*!
+ *  Tests two terms for alpha-convertibility. Terms that differ only by
+ *  alpha-conversion (renaming of bound variables) are called α-equivalent.
+ *
+ *  Returns 1 if the two terms are α-equivalent, otherwise 0.
+ */
+uint8_t
+lambda_term_alpha_compare(struct lambda_term *t1, struct lambda_term *t2)
 {
-    switch (term->type)
-    {
-    case LAMBDA_TERM_APPLICATION:
-        break;
-    case LAMBDA_TERM_ABSTRACTION:
-        break;
-    case LAMBDA_TERM_VARIABLE:
-        break;
-    } /* end switch */
+    struct buf *b1, *b2;
+    uint8_t r;
+
+    b1 = buf_new(64);
+    b2 = buf_new(64);
+    lambda_term_alpha_hash(t1, b1);
+    lambda_term_alpha_hash(t2, b2);
+
+    printf("#1:%s\n", b1->data);
+    printf("#2:%s\n", b2->data);
+
+    r = buf_compare(b1, b2);
+    buf_destroy(b1);
+    buf_destroy(b2);
+    return r;
 }
 
 void

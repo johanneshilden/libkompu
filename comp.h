@@ -1,6 +1,11 @@
 #ifndef COMP_H
 #define COMP_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <inttypes.h>
 #include <stdlib.h>
 

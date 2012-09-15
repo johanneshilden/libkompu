@@ -1,6 +1,11 @@
 #ifndef TMACHINE_H
 #define TMACHINE_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <inttypes.h>
 #include <stdlib.h>
 
