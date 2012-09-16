@@ -296,9 +296,6 @@ lambda_term_alpha_compare(struct lambda_term *t1, struct lambda_term *t2)
     lambda_term_alpha_hash(t1, b1);
     lambda_term_alpha_hash(t2, b2);
 
-    printf("#1:%s\n", b1->data);
-    printf("#2:%s\n", b2->data);
-
     r = buf_compare(b1, b2);
     buf_destroy(b1);
     buf_destroy(b2);
