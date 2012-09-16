@@ -15,7 +15,8 @@ enum node_type {
     NODE_SUCCESSOR,
     NODE_COMPOSITION,
     NODE_RECURSION,
-    NODE_SEARCH
+    NODE_SEARCH,
+    NODE_INVALID
 };
 
 struct node
@@ -60,6 +61,7 @@ struct node *successor_node_new();
 struct node *composition_node_new(struct node *f, struct node **g);
 struct node *recursion_node_new(struct node *f, struct node *g);
 struct node *search_node_new(struct node *p);
+struct node *invalid_node_new();
 
 struct node *node_clone(struct node *n);
 void node_destroy(struct node *n);

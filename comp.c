@@ -141,6 +141,15 @@ search_node_new(struct node *p)
     return n;
 }
 
+struct node *invalid_node_new()
+{
+    struct node *n;
+    n = malloc(sizeof(struct node));
+    n->data = NULL;
+    n->type = NODE_INVALID;
+    return n;
+}
+
 struct node *
 node_clone(struct node *n)
 {
@@ -171,6 +180,8 @@ node_clone(struct node *n)
             return zero_node_new();
         case NODE_SUCCESSOR:
             return successor_node_new();
+        case NODE_INVALID:
+            return invalid_node_new();
         } /* end switch */
     }
     return NULL;
@@ -214,6 +225,7 @@ node_destroy(struct node *n)
     case NODE_ZERO:
     case NODE_PROJECTION:
     case NODE_SUCCESSOR:
+    case NODE_INVALID:
         break;
     }
     free(n->data);
@@ -242,6 +254,7 @@ node_compute(const struct node *n, int *x, size_t args)
     switch (n->type)
     {
     case NODE_ZERO:
+    case NODE_INVALID:
         return 0;
     case NODE_PROJECTION:
         d_ptr.proj = (struct node_projection *) n->data;
