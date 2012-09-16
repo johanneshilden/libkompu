@@ -186,7 +186,8 @@ node_destroy(struct node *n)
     union node_d_ptr d_ptr;
     struct node **curr;
 
-    assert(n);
+    if (!n)
+        return;
 
     switch (n->type)
     {
