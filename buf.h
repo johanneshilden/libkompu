@@ -28,6 +28,7 @@ void buf_destroy(struct buf *b);
 
 buferror_t buf_grow(struct buf *b, size_t n);
 void buf_append_chars(struct buf *b, const char *s);
+void buf_nullterm(struct buf *b);
 
 int buf_compare(struct buf *b1, struct buf *b2);
 

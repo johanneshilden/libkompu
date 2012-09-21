@@ -70,6 +70,16 @@ buf_append_chars(struct buf *b, const char *s)
 }
 
 /*!
+ *  Null-terminates the buffer (i.e., appends a '\0' to the buffer's data).
+ */
+void buf_nullterm(struct buf *b)
+{
+    if (b->size + 1 > b->asize && buf_grow(b, b->size + 1) < 0)
+        return;
+    b->data[b->size] = '\0';
+}
+
+/*!
  *  Compares two buffers. Returns 1 if the two buffers have identical length
  *  and data.
  */
