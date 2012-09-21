@@ -172,7 +172,7 @@ node_clone(struct node *n)
                                       node_clone(d_ptr.rec->g));
         case NODE_SEARCH:
             d_ptr.search = (struct node_search *) n->data;
-            return search_node_new(d_ptr.search->p);
+            return search_node_new(node_clone(d_ptr.search->p));
         case NODE_PROJECTION:
             d_ptr.proj = (struct node_projection *) n->data;
             return projection_node_new(d_ptr.proj->place);
