@@ -107,6 +107,122 @@ unserialize(struct buf *buf, int *pos)
     return invalid_node_new();
 }
 
+static ser_valid_t validate_segment(struct buf *buf, int *pos);
+
+static ser_valid_t
+validate_proj_segment(struct buf *buf, int *pos)
+{
+    if ('}' == buf->data[*pos])
+        return SERIAL_DATA_INVALID;     /* We need at least one digit */
+    while ('}' != buf->data[*pos]) {
+        switch (buf->data[*pos])
+        {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            break;
+        default:
+            return SERIAL_DATA_INVALID;
+        } /* end switch */
+        ++(*pos);
+    }
+    ++(*pos);
+    return SERIAL_DATA_OK;
+}
+
+static ser_valid_t
+validate_rec_segment(struct buf *buf, int *pos)
+{
+    assert(buf && pos);
+
+    if (validate_segment(buf, pos) < 0)
+        return SERIAL_DATA_INVALID;
+    if (',' != buf->data[*pos])
+        return SERIAL_DATA_INVALID;
+    ++(*pos);
+    if (validate_segment(buf, pos) < 0)
+        return SERIAL_DATA_INVALID;
+    if ('>' != buf->data[*pos])
+        return SERIAL_DATA_INVALID;
+    ++(*pos);
+    return SERIAL_DATA_OK;
+}
+
+static ser_valid_t
+validate_comp_segment(struct buf *buf, int *pos)
+{
+    int i;
+    assert(buf && pos);
+
+    if (']' == buf->data[*pos])
+        return SERIAL_DATA_INVALID;     /* '[]' is not valid */
+    i = 0;
+    while (1) {
+        if (validate_segment(buf, pos) < 0)
+            return SERIAL_DATA_INVALID;
+        switch (buf->data[*pos])
+        {
+        case ']':
+            ++(*pos);
+            return i > 0 ? SERIAL_DATA_OK : SERIAL_DATA_INVALID;
+        case ',':
+            ++i;
+            break;
+        default:
+            return SERIAL_DATA_INVALID;
+        } /* end switch */
+        ++(*pos);
+    }
+}
+
+static ser_valid_t
+validate_search_segment(struct buf *buf, int *pos)
+{
+    assert(buf && pos);
+
+    if (validate_segment(buf, pos) < 0)
+        return SERIAL_DATA_INVALID;
+    if (')' != buf->data[*pos])
+        return SERIAL_DATA_INVALID;
+    ++(*pos);
+    return SERIAL_DATA_OK;
+}
+
+static ser_valid_t
+validate_segment(struct buf *buf, int *pos)
+{
+    char x;
+    assert(buf && pos);
+
+    x = buf->data[*pos];
+    ++(*pos);
+    switch (x)
+    {
+    case '0':
+    case '+':
+    case 'X':
+        return SERIAL_DATA_OK;
+    case '{':
+        return validate_proj_segment(buf, pos);
+    case '[':
+        return validate_comp_segment(buf, pos);
+    case '<':
+        return validate_rec_segment(buf, pos);
+    case '(':
+        return validate_search_segment(buf, pos);
+    default:
+        break;
+    } /* end switch */
+    return SERIAL_DATA_INVALID;
+}
+
 /*!
  *  Creates a node from the string stored in \a buf, according to the rules
  *  described under node_serialize().
@@ -189,3 +305,11 @@ node_serialize(struct node *node, struct buf* buf)
         break;
     }
 }
+
+ser_valid_t
+node_serial_data_is_valid(struct buf *buf)
+{
+    int n = 0;
+    return validate_segment(buf, &n);
+}
+

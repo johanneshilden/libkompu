@@ -477,15 +477,21 @@ main(void)
 
     struct buf *b = buf_new(64);
 
-    buf_append_chars(b, "[[<0,0>,0,{114}],0]");
 //    buf_append_chars(b, "[0,0,0,0]");
 
-    struct node *node = node_unserialize(b);
 
-    struct buf *buf2 = buf_new(64);
-    node_serialize(node, buf2);
+    buf_append_chars(b, "[[<0,0>,0,{114}],0]");
+//    buf_append_chars(b, "([0,0,<0,0>])");
 
-    printf("%s\n", buf2->data);
+
+    printf("valid = %i\n", node_serial_data_is_valid(b));
+
+//    struct node *node = node_unserialize(b);
+
+//    struct buf *buf2 = buf_new(64);
+//    node_serialize(node, buf2);
+
+//    printf("%s\n", buf2->data);
 
 
     return 0;
