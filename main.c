@@ -5,6 +5,7 @@
 #include "tmachine.h"
 #include "lcalc.h"
 #include "buf.h"
+#include "comp_serialize.h"
 
 static void
 comp_test()
@@ -448,7 +449,44 @@ main(void)
     if (0 == 1)
         tmachine_test();    // tmp
 
-    lcalc_test();
+    if (0 == 1)
+        lcalc_test();
+
+    struct node **g = node_array_new(2);
+    g[0] = invalid_node_new();
+    g[1] = NULL;
+
+    struct node **h = node_array_new(2);
+    h[0] = composition_node_new(projection_node_new(123), g);
+    h[1] = NULL;
+
+    //
+
+//    struct node *n = composition_node_new(invalid_node_new(), h);
+//    struct buf *b  = buf_new(64);
+
+//    node_serialize(n, b);
+
+//    int p = 0;
+//    struct node *n1 = node_unserialize(b, &p);
+
+//    struct buf *b2  = buf_new(64);
+//    node_serialize(n1, b2);
+
+//    printf("%s\n", b2->data);
+
+    struct buf *b = buf_new(64);
+
+    buf_append_chars(b, "[[<0,0>,0,{114}],0]");
+//    buf_append_chars(b, "[0,0,0,0]");
+
+    struct node *node = node_unserialize(b);
+
+    struct buf *buf2 = buf_new(64);
+    node_serialize(node, buf2);
+
+    printf("%s\n", buf2->data);
+
 
     return 0;
 }
