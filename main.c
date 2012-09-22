@@ -443,7 +443,7 @@ lcalc_test()
 int
 main(void)
 {
-    if (0 == 1)
+//    if (0 == 1)
         comp_test();        // tmp
 
     if (0 == 1)

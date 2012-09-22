@@ -251,6 +251,9 @@ node_compute(const struct node *n, int *x, size_t args)
     struct node **curr;
     int i, j, lim;
 
+    if (*x < 0)
+        return -1;
+
     switch (n->type)
     {
     case NODE_ZERO:
@@ -272,7 +275,10 @@ node_compute(const struct node *n, int *x, size_t args)
         int y[d_ptr.comp->places];
         j = 0;
         while (j < d_ptr.comp->places) {
-            y[j++] = node_compute(*curr, x, args);
+            i = node_compute(*curr, x, args);
+            if (i < 0)
+                return -1;
+            y[j++] = i;
             ++curr;
         }
         return node_compute(d_ptr.comp->f, y, j);
@@ -284,7 +290,10 @@ node_compute(const struct node *n, int *x, size_t args)
         } else {
             int nx[args + 1];
             --x[args - 1];
-            nx[0] = node_compute(n, x, args);
+            i = node_compute(n, x, args);
+            if (i < 0)
+                return -1;
+            nx[0] = i;
             memcpy(&nx[1], x, args * sizeof(int));
             ++x[args - 1];
             return node_compute(d_ptr.rec->g, nx, args + 1);
@@ -295,7 +304,10 @@ node_compute(const struct node *n, int *x, size_t args)
         lim = x[args - 1];
         for (i = 0; i < lim; ++i) {
             x[args - 1] = i;
-            if (1 == node_compute(d_ptr.search->p, x, args))
+            j = node_compute(d_ptr.search->p, x, args);
+            if (j < 0)
+                return -1;
+            else if (1 == j)
                 return i;
         }
         return lim;
