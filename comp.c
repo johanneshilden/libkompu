@@ -258,7 +258,8 @@ node_compute(const struct node *n, int *x, size_t args)
         return 0;
     case NODE_PROJECTION:
         d_ptr.proj = (struct node_projection *) n->data;
-        return x[d_ptr.proj->place];
+        j = d_ptr.proj->place;
+        return j < (int) args ? x[j] : -1;
     case NODE_SUCCESSOR:
         return (*x) + 1;
     case NODE_COMPOSITION:
