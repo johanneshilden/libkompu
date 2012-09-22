@@ -259,6 +259,10 @@ node_compute(const struct node *n, int *x, size_t args)
     case NODE_PROJECTION:
         d_ptr.proj = (struct node_projection *) n->data;
         j = d_ptr.proj->place;
+        /*
+         *  Returns -1 if the projection coordinate is larger than the number
+         *  of arguments.
+         */
         return j < (int) args ? x[j] : -1;
     case NODE_SUCCESSOR:
         return (*x) + 1;
