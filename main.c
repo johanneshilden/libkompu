@@ -443,14 +443,14 @@ lcalc_test()
 int
 main(void)
 {
-//    if (0 == 1)
+    if (0 == 1)
         comp_test();        // tmp
 
-    if (0 == 1)
-        tmachine_test();    // tmp
+//    if (0 == 1)
+//        tmachine_test();    // tmp
 
-    if (0 == 1)
-        lcalc_test();
+//    if (0 == 1)
+//        lcalc_test();
 
     struct node **g = node_array_new(2);
     g[0] = invalid_node_new();
@@ -492,6 +492,13 @@ main(void)
 //    node_serialize(node, buf2);
 
 //    printf("%s\n", buf2->data);
+
+
+
+    struct node *n2 = recursion_node_new(zero_node_new(), zero_node_new());
+    int x = node_compute(n2, NULL, 0);
+
+    printf("w.. %d\n", x);
 
 
     return 0;

@@ -251,7 +251,7 @@ node_compute(const struct node *n, int *x, size_t args)
     struct node **curr;
     int i, j, lim;
 
-    if (*x < 0)
+    if (args && *x < 0)
         return -1;
 
     switch (n->type)
@@ -284,6 +284,8 @@ node_compute(const struct node *n, int *x, size_t args)
         return node_compute(d_ptr.comp->f, y, j);
     }
     case NODE_RECURSION:
+        if (!args)
+            return -1;
         d_ptr.rec = (struct node_recursion *) n->data;
         if (0 == x[args - 1]) {
             return node_compute(d_ptr.rec->f, x, args - 1);
@@ -299,8 +301,9 @@ node_compute(const struct node *n, int *x, size_t args)
             return node_compute(d_ptr.rec->g, nx, args + 1);
         }
     case NODE_SEARCH:
+        if (!args)
+            return -1;
         d_ptr.search = (struct node_search *) n->data;
-
         lim = x[args - 1];
         for (i = 0; i < lim; ++i) {
             x[args - 1] = i;
