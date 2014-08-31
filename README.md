@@ -1,6 +1,6 @@
 # libkompu
 
-`libkompu` is a C function library for creating and evaluating expressions in various formalizations of the concept of computability and effectively calculable partial functions:
+`libkompu` is a C library for building and evaluating expressions in the various formalizations of the notion of computability and effectively calculable partial functions:
 
 * The Turing Machine
 * Untypted Lambda (&#955;) Calculus
